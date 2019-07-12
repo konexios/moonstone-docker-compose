@@ -1,0 +1,265 @@
+version: '3'
+services:
+    redis:
+        image: redis:alpine
+        container_name: redis
+        hostname: redis
+        ports:
+            - 6379:6379
+        entrypoint: redis-server --appendonly yes
+        user: root:root
+    rabbitmq:
+        image: rabbitmq:3-management
+        container_name: rabbitmq
+        hostname: rabbitmq
+        ports:
+            - 15672:15672
+            - 5672:5672
+            - 1883:1883
+        volumes:
+            - ./etc/rabbitmq/:/etc/rabbitmq/
+            - ./var/lib/rabbitmq/:/var/lib/rabbitmq/
+        user: root:root
+    mongodb:
+        image: mongo:3.6.13-xenial
+        container_name: mongodb
+        hostname: mongodb
+        restart: always
+        ports:
+            - 27017:27017
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: admin
+            MONGO_INITDB_ROOT_PASSWORD: password
+        volumes:
+            - ./var/lib/mongodb/:/data/db
+        user: root:root
+    elasticsearch:
+        image: elasticsearch:6.8.1
+        container_name: elasticsearch
+        hostname: elasticsearch
+        ports:
+            - 9200:9200
+        environment:
+            - discovery.type=single-node
+            - cluster.name=moonstone
+            - node.name=moonstone
+        volumes:
+            - ./var/lib/elasticsearch:/usr/share/elasticsearch/data
+        user: root:root
+    zookeeper:
+        image: zookeeper
+        container_name: zookeeper
+        hostname: zookeeper
+        volumes:
+            - ./var/lib/zookeeper/data:/data
+            - ./var/lib/zookeeper/datalog:/datalog
+        user: root:root
+    kafka:
+        image: bitnami/kafka:latest
+        container_name: kafka
+        hostname: kafka
+        environment:
+            - ALLOW_PLAINTEXT_LISTENER=yes
+            - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+        volumes:
+            - ./var/lib/kafka:/bitnami/kafka
+        depends_on:
+            - zookeeper
+        user: root:root
+    config:
+        image: hyness/spring-cloud-config-server
+        container_name: config
+        hostname: config
+        ports:
+            - 8888:8888
+        environment:
+            - SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/arrow-acs/moonstone-cloud-config.git
+    pegasus-local-api:
+        image: tnguyenarrow/moonstone-pegasus-local-api:19.0
+        container_name: pegasus-local-api
+        hostname: pegasus-local-api
+        ports:
+            - 7820:7820
+        environment:
+            - JAVA_OPTS=-Xmx512m
+        restart: always
+        depends_on:
+            - redis
+            - rabbitmq
+            - mongodb
+            - elasticsearch
+            - zookeeper
+            - kafka
+            - config
+        user: root:root
+    pegasus-public-api:
+        image: tnguyenarrow/moonstone-pegasus-public-api:19.0
+        container_name: pegasus-public-api
+        hostname: pegasus-public-api
+        ports:
+            - 7924:7924
+        environment:
+            - JAVA_OPTS=-Xmx512m
+        restart: always
+        depends_on:
+            - redis
+            - rabbitmq
+            - mongodb
+            - elasticsearch
+            - zookeeper
+            - kafka
+            - config
+            - pegasus-local-api
+        user: root:root
+    pegasus-web:
+        image: tnguyenarrow/moonstone-pegasus-web:19.0
+        container_name: pegasus-web
+        hostname: pegasus-web
+        ports:
+            - 7920:7920
+        environment:
+            - JAVA_OPTS=-Xmx512m
+        restart: always
+        depends_on:
+            - redis
+            - rabbitmq
+            - mongodb
+            - elasticsearch
+            - zookeeper
+            - kafka
+            - config
+            - pegasus-local-api
+        user: root:root
+    rhea-private-api:
+        image: tnguyenarrow/moonstone-rhea-private-api:19.0
+        container_name: rhea-private-api
+        hostname: rhea-private-api
+        ports:
+            - 7821:7821
+        environment:
+            - JAVA_OPTS=-Xmx512m
+        restart: always
+        depends_on:
+            - redis
+            - rabbitmq
+            - mongodb
+            - elasticsearch
+            - zookeeper
+            - kafka
+            - config
+            - pegasus-local-api
+        user: root:root
+    rhea-web:
+        image: tnguyenarrow/moonstone-rhea-web:19.0
+        container_name: rhea-web
+        hostname: rhea-web
+        ports:
+            - 7922:7922
+        environment:
+            - JAVA_OPTS=-Xmx512m
+        restart: always
+        depends_on:
+            - redis
+            - rabbitmq
+            - mongodb
+            - elasticsearch
+            - zookeeper
+            - kafka
+            - config
+            - pegasus-local-api
+        user: root:root
+    kronos-api:
+        image: tnguyenarrow/moonstone-kronos-api:19.0
+        container_name: kronos-api
+        hostname: kronos-api
+        ports:
+            - 7923:7923
+        environment:
+            - JAVA_OPTS=-Xmx512m
+        restart: always
+        depends_on:
+            - redis
+            - rabbitmq
+            - mongodb
+            - elasticsearch
+            - zookeeper
+            - kafka
+            - config
+            - pegasus-local-api
+            - rhea-private-api
+        user: root:root
+    kronos-web:
+        image: tnguyenarrow/moonstone-kronos-web:19.0
+        container_name: kronos-web
+        hostname: kronos-web
+        ports:
+            - 7921:7921
+        environment:
+            - JAVA_OPTS=-Xmx512m
+        restart: always
+        depends_on:
+            - redis
+            - rabbitmq
+            - mongodb
+            - elasticsearch
+            - zookeeper
+            - kafka
+            - config
+            - pegasus-local-api
+            - rhea-private-api
+        user: root:root
+    kronos-engine:
+        image: tnguyenarrow/moonstone-kronos-engine:19.0
+        container_name: kronos-engine
+        hostname: kronos-engine
+        environment:
+            - JAVA_OPTS=-Xmx512m
+        restart: always
+        depends_on:
+            - redis
+            - rabbitmq
+            - mongodb
+            - elasticsearch
+            - zookeeper
+            - kafka
+            - config
+            - pegasus-local-api
+            - rhea-private-api
+        user: root:root
+    kronos-cron:
+        image: tnguyenarrow/moonstone-kronos-cron:19.0
+        container_name: kronos-cron
+        hostname: kronos-cron
+        environment:
+            - JAVA_OPTS=-Xmx512m
+        restart: always
+        depends_on:
+            - redis
+            - rabbitmq
+            - mongodb
+            - elasticsearch
+            - zookeeper
+            - kafka
+            - config
+            - pegasus-local-api
+            - rhea-private-api
+        user: root:root
+    apollo-web:
+        image: tnguyenarrow/moonstone-apollo-web:19.0
+        container_name: apollo-web
+        hostname: apollo-web
+        ports:
+            - 7925:7925
+        environment:
+            - JAVA_OPTS=-Xmx512m
+        restart: always
+        depends_on:
+            - redis
+            - rabbitmq
+            - mongodb
+            - elasticsearch
+            - zookeeper
+            - kafka
+            - config
+            - pegasus-local-api
+        user: root:root
