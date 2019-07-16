@@ -41,3 +41,7 @@ This is the default installation of Moonstone with all of its components.  It's 
 - **kronos-api** : http://_your-vm-ip_:7923/swagger-ui.html
 - **kronos-web** : http://_your-vm-ip_:7921
 - **apollo-web** : http://_your-vm-ip_:7925
+
+## Telemetry endpoints
+- **MQTT** : tcp://_your-vm-ip_:1883
+- **AMQP** : amqp://_your-vm-ip_:5672
