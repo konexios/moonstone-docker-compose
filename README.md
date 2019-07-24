@@ -28,6 +28,12 @@ This is the default installation of Moonstone with all of its components.  It's 
 - [Docker](https://docs.docker.com/)
 - [Docker Compose](https://docs.docker.com/compose/)
 
+## Installation
+- git clone https://github.com/arrow-acs/moonstone-docker-compose
+- cd moonstone-docker-compose
+- bin/env.sh
+- docker-compose up
+
 ## Default admin account
 - **Username** : sysadmin@arrowconnect.io
 - **Password** : Arrow-Connect-123
