@@ -75,7 +75,7 @@ services:
         environment:
             - SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/arrow-acs/moonstone-cloud-config.git
     pegasus-local-api:
-        image: tnguyenarrow/moonstone-pegasus-local-api:19.0
+        image: tnguyenarrow/moonstone-pegasus-local-api:19.1
         container_name: pegasus-local-api
         hostname: pegasus-local-api
         ports:
@@ -93,7 +93,7 @@ services:
             - config
         user: root:root
     pegasus-public-api:
-        image: tnguyenarrow/moonstone-pegasus-public-api:19.0
+        image: tnguyenarrow/moonstone-pegasus-public-api:19.1
         container_name: pegasus-public-api
         hostname: pegasus-public-api
         ports:
@@ -112,7 +112,7 @@ services:
             - pegasus-local-api
         user: root:root
     pegasus-web:
-        image: tnguyenarrow/moonstone-pegasus-web:19.0
+        image: tnguyenarrow/moonstone-pegasus-web:19.1
         container_name: pegasus-web
         hostname: pegasus-web
         ports:
@@ -131,7 +131,7 @@ services:
             - pegasus-local-api
         user: root:root
     rhea-private-api:
-        image: tnguyenarrow/moonstone-rhea-private-api:19.0
+        image: tnguyenarrow/moonstone-rhea-private-api:19.1
         container_name: rhea-private-api
         hostname: rhea-private-api
         ports:
@@ -150,7 +150,7 @@ services:
             - pegasus-local-api
         user: root:root
     rhea-web:
-        image: tnguyenarrow/moonstone-rhea-web:19.0
+        image: tnguyenarrow/moonstone-rhea-web:19.1
         container_name: rhea-web
         hostname: rhea-web
         ports:
@@ -169,7 +169,7 @@ services:
             - pegasus-local-api
         user: root:root
     kronos-api:
-        image: tnguyenarrow/moonstone-kronos-api:19.0
+        image: tnguyenarrow/moonstone-kronos-api:19.1
         container_name: kronos-api
         hostname: kronos-api
         ports:
@@ -189,7 +189,7 @@ services:
             - rhea-private-api
         user: root:root
     kronos-web:
-        image: tnguyenarrow/moonstone-kronos-web:19.0
+        image: tnguyenarrow/moonstone-kronos-web:19.1
         container_name: kronos-web
         hostname: kronos-web
         ports:
@@ -209,7 +209,7 @@ services:
             - rhea-private-api
         user: root:root
     kronos-engine:
-        image: tnguyenarrow/moonstone-kronos-engine:19.0
+        image: tnguyenarrow/moonstone-kronos-engine:19.1
         container_name: kronos-engine
         hostname: kronos-engine
         environment:
@@ -227,7 +227,7 @@ services:
             - rhea-private-api
         user: root:root
     kronos-cron:
-        image: tnguyenarrow/moonstone-kronos-cron:19.0
+        image: tnguyenarrow/moonstone-kronos-cron:19.1
         container_name: kronos-cron
         hostname: kronos-cron
         environment:
@@ -245,7 +245,7 @@ services:
             - rhea-private-api
         user: root:root
     apollo-web:
-        image: tnguyenarrow/moonstone-apollo-web:19.0
+        image: tnguyenarrow/moonstone-apollo-web:19.1
         container_name: apollo-web
         hostname: apollo-web
         ports:
